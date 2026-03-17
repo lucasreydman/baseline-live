@@ -3,10 +3,25 @@
 import Link from 'next/link'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { formatClock, periodLabel } from '@/lib/utils'
-import type { GameDetailSummary } from '@/lib/types'
+import type { PeriodScore, TeamScore } from '@/lib/types'
+
+// Accepts both GameDetailSummary and GameSummary (periodScores optional)
+interface GameHeaderSummary {
+  gameStatus: 1 | 2 | 3
+  gameStatusText: string
+  period: number
+  gameClock: string
+  arenaName: string
+  arenaCity: string
+  homeTeam: TeamScore
+  awayTeam: TeamScore
+  isLive: boolean
+  isFinal: boolean
+  periodScores?: PeriodScore[]
+}
 
 interface GameHeaderProps {
-  summary: GameDetailSummary
+  summary: GameHeaderSummary
 }
 
 export function GameHeader({ summary }: GameHeaderProps) {
@@ -83,7 +98,7 @@ export function GameHeader({ summary }: GameHeaderProps) {
         </div>
 
         {/* Quarter scores */}
-        {summary.periodScores.length > 0 && (
+        {(summary.periodScores?.length ?? 0) > 0 && (
           <div className="mt-5 overflow-x-auto">
             <table className="mx-auto text-xs text-center border-collapse">
               <thead>

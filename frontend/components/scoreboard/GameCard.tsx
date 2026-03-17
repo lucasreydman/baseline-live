@@ -9,9 +9,10 @@ import type { GameSummary } from '@/lib/types'
 
 interface GameCardProps {
   game: GameSummary
+  date: string
 }
 
-export function GameCard({ game }: GameCardProps) {
+export function GameCard({ game, date }: GameCardProps) {
   const { addGame, removeGame, hasGame } = useGameTray()
   const inTray = hasGame(game.gameId)
 
@@ -52,7 +53,7 @@ export function GameCard({ game }: GameCardProps) {
   }
 
   return (
-    <Link href={`/game/${game.gameId}`} className="group block">
+    <Link href={`/game/${game.gameId}?date=${date}`} className="group block">
       <div className="relative rounded-xl border border-slate-800 bg-slate-900 p-4 transition-all hover:border-slate-700 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-black/20">
         {/* Status + clock */}
         <div className="flex items-center justify-between mb-3">

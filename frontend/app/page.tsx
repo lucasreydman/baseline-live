@@ -83,6 +83,7 @@ export default function HomePage() {
       <ScoreboardGrid
         games={filteredGames}
         isLoading={isLoading && !scoreboard}
+        date={date}
       />
     </div>
   )

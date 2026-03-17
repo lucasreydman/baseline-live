@@ -96,6 +96,14 @@ export function PlayByPlay({ playByPlay, isLoading, error }: PlayByPlayProps) {
   }, [playByPlay, isLive])
 
   if (error) {
+    if (error.message === 'game_not_started') {
+      return (
+        <div className="py-16 text-center text-slate-500">
+          <p className="text-slate-400 text-base">Game hasn&apos;t started yet</p>
+          <p className="text-xs mt-1 text-slate-600">Live play-by-play will appear here once the game begins</p>
+        </div>
+      )
+    }
     return (
       <div className="py-12 text-center text-slate-500">
         <p>Unable to load play-by-play.</p>

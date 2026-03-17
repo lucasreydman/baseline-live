@@ -5,6 +5,7 @@ import type { GameSummary } from '@/lib/types'
 interface ScoreboardGridProps {
   games: GameSummary[]
   isLoading: boolean
+  date: string
 }
 
 function GameCardSkeleton() {
@@ -25,7 +26,7 @@ function GameCardSkeleton() {
   )
 }
 
-export function ScoreboardGrid({ games, isLoading }: ScoreboardGridProps) {
+export function ScoreboardGrid({ games, isLoading, date }: ScoreboardGridProps) {
   if (isLoading) {
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -49,7 +50,7 @@ export function ScoreboardGrid({ games, isLoading }: ScoreboardGridProps) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {games.map((game) => (
-        <GameCard key={game.gameId} game={game} />
+        <GameCard key={game.gameId} game={game} date={date} />
       ))}
     </div>
   )

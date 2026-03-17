@@ -26,6 +26,12 @@ from app.services.cache import cache
 
 logger = logging.getLogger(__name__)
 
+
+class GameNotStartedError(Exception):
+    """Raised when the NBA live API returns an empty body (game not started yet)."""
+    pass
+
+
 # ---------------------------------------------------------------------------
 # TTL constants (seconds)
 # ---------------------------------------------------------------------------
@@ -81,6 +87,9 @@ def _fetch_with_retry(fn, retries: int = 3, backoff: float = 1.5) -> Any:
         try:
             return fn()
         except Exception as exc:
+            # Empty response = game not started; no point retrying
+            if isinstance(exc, ValueError) and "Expecting value" in str(exc):
+                raise
             last_exc = exc
             if attempt < retries - 1:
                 sleep_time = backoff ** attempt
@@ -181,7 +190,11 @@ def get_game_summary(game_id: str) -> GameDetailSummary:
         bs = boxscore.BoxScore(game_id=game_id)
         return bs.get_dict()
 
-    raw = _fetch_with_retry(_fetch)
+    try:
+        raw = _fetch_with_retry(_fetch)
+    except ValueError as exc:
+        raise GameNotStartedError("game_not_started") from exc
+
     game = raw.get("game", {})
 
     status = _safe_int(game.get("gameStatus"))
@@ -350,7 +363,11 @@ def get_boxscore(game_id: str) -> BoxScoreResponse:
         bs = boxscore.BoxScore(game_id=game_id)
         return bs.get_dict()
 
-    raw = _fetch_with_retry(_fetch)
+    try:
+        raw = _fetch_with_retry(_fetch)
+    except ValueError as exc:
+        raise GameNotStartedError("game_not_started") from exc
+
     game = raw.get("game", {})
 
     status = _safe_int(game.get("gameStatus"))
@@ -401,7 +418,10 @@ def get_playbyplay(game_id: str) -> PlayByPlayResponse:
         pbp = playbyplay.PlayByPlay(game_id=game_id)
         return pbp.get_dict()
 
-    raw = _fetch_with_retry(_fetch)
+    try:
+        raw = _fetch_with_retry(_fetch)
+    except ValueError as exc:
+        raise GameNotStartedError("game_not_started") from exc
     game = raw.get("game", {})
     actions_raw = game.get("actions", [])
 

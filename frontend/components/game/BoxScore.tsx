@@ -183,6 +183,14 @@ function SkeletonTable() {
 
 export function BoxScore({ boxScore, isLoading, error }: BoxScoreProps) {
   if (error) {
+    if (error.message === 'game_not_started') {
+      return (
+        <div className="py-16 text-center text-slate-500">
+          <p className="text-slate-400 text-base">Game hasn&apos;t started yet</p>
+          <p className="text-xs mt-1 text-slate-600">Box score will be available once the game begins</p>
+        </div>
+      )
+    }
     return (
       <div className="py-12 text-center text-slate-500">
         <p>Unable to load box score.</p>

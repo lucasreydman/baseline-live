@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, use } from 'react'
+import { format } from 'date-fns'
 import { useGameSummary } from '@/hooks/useGameSummary'
 import { useBoxScore } from '@/hooks/useBoxScore'
 import { usePlayByPlay } from '@/hooks/usePlayByPlay'
+import { useScoreboard } from '@/hooks/useScoreboard'
 import { GameHeader } from '@/components/game/GameHeader'
 import { SummaryTab } from '@/components/game/SummaryTab'
 import { BoxScore } from '@/components/game/BoxScore'
@@ -72,8 +74,17 @@ function TrayButton({ summary }: { summary: GameDetailSummary }) {
   )
 }
 
-export default function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function GamePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ gameId: string }>
+  searchParams: Promise<{ date?: string }>
+}) {
   const { gameId } = use(params)
+  const { date: dateParam } = use(searchParams)
+  const date = dateParam ?? format(new Date(), 'yyyy-MM-dd')
+
   const [activeTab, setActiveTab] = useState<Tab>('summary')
 
   const { summary, isLoading: summaryLoading, error: summaryError } = useGameSummary(gameId)
@@ -86,18 +97,31 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
     activeTab === 'playbyplay'
   )
 
+  // Use the scoreboard (likely already in SWR cache) as a fallback source of team info
+  const { scoreboard } = useScoreboard(date)
+  const cachedGame = scoreboard?.games.find((g) => g.gameId === gameId)
+
+  const isNotStarted = summaryError?.message === 'game_not_started'
+
+  // Best available header data: full summary > scoreboard cache
+  const headerData = summary ?? (isNotStarted ? cachedGame : undefined)
+
+  // Show header area
+  const showSkeleton = (summaryLoading && !summary) && !cachedGame
+  const showError = !!summaryError && !isNotStarted && !headerData
+
   return (
     <div>
       {/* Sticky game header */}
       <div className="sticky top-14 z-30">
-        {summaryLoading && !summary ? (
+        {showSkeleton ? (
           <HeaderSkeleton />
-        ) : summaryError ? (
+        ) : showError ? (
           <div className="bg-slate-900 border-b border-slate-800 px-4 py-4 text-center text-sm text-red-400">
-            Unable to load game data — {summaryError.message}
+            Unable to load game data — {summaryError!.message}
           </div>
-        ) : summary ? (
-          <GameHeader summary={summary} />
+        ) : headerData ? (
+          <GameHeader summary={headerData} />
         ) : null}
       </div>
 
