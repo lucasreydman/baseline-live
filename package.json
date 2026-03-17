@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix frontend\" \"cd backend && .venv/Scripts/uvicorn app.main:app --reload --port 8000\"",
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev:backend\"",
     "dev:frontend": "npm run dev --prefix frontend",
-    "dev:backend": "cd backend && .venv/Scripts/uvicorn app.main:app --reload --port 8000"
+    "dev:backend": "cd backend && .venv/Scripts/uvicorn.exe app.main:app --reload --port 8000"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
