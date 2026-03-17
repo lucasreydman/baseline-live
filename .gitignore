@@ -1,0 +1,23 @@
+# Python
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/.pytest_cache/
+backend/*.egg-info/
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+
+# Root node_modules
+node_modules/
+
+# Env files — never commit secrets
+backend/.env
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
