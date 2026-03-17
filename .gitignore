@@ -8,6 +8,7 @@ backend/*.egg-info/
 
 # Next.js
 frontend/.next/
+frontend/frontend/.next/
 frontend/out/
 frontend/node_modules/
 
