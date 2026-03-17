@@ -10,15 +10,17 @@ import { GameHeader } from '@/components/game/GameHeader'
 import { SummaryTab } from '@/components/game/SummaryTab'
 import { BoxScore } from '@/components/game/BoxScore'
 import { PlayByPlay } from '@/components/game/PlayByPlay'
+import { Roster } from '@/components/game/Roster'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils'
 import { useGameTray } from '@/store/gameTray'
 import type { GameDetailSummary } from '@/lib/types'
 
-type Tab = 'summary' | 'boxscore' | 'playbyplay'
+type Tab = 'summary' | 'roster' | 'boxscore' | 'playbyplay'
 
 const TABS: { value: Tab; label: string }[] = [
   { value: 'summary', label: 'Summary' },
+  { value: 'roster', label: 'Roster' },
   { value: 'boxscore', label: 'Box Score' },
   { value: 'playbyplay', label: 'Play by Play' },
 ]
@@ -90,7 +92,7 @@ export default function GamePage({
   const { summary, isLoading: summaryLoading, error: summaryError } = useGameSummary(gameId)
   const { boxScore, isLoading: boxLoading, error: boxError } = useBoxScore(
     gameId,
-    activeTab === 'boxscore'
+    activeTab === 'boxscore' || activeTab === 'roster'
   )
   const { playByPlay, isLoading: pbpLoading, error: pbpError } = usePlayByPlay(
     gameId,
@@ -156,6 +158,13 @@ export default function GamePage({
             summary={summary}
             isLoading={summaryLoading && !summary}
             error={summaryError as Error | undefined}
+          />
+        )}
+        {activeTab === 'roster' && (
+          <Roster
+            boxScore={boxScore}
+            isLoading={boxLoading && !boxScore}
+            error={boxError as Error | undefined}
           />
         )}
         {activeTab === 'boxscore' && (
