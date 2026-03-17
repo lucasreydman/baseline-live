@@ -9,11 +9,6 @@ body {
   color: #e2e8f0;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
-}
-
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
