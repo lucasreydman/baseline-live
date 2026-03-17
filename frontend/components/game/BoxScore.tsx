@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/Skeleton'
-import { formatMinutes, formatPct } from '@/lib/utils'
+import { formatMinutes } from '@/lib/utils'
 import type { BoxScoreResponse, PlayerStats, TeamBoxScore } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
